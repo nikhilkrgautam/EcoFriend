@@ -20,9 +20,6 @@ class Navbar extends React.Component {
                   <Link to="/">Home</Link>
                 </li>
                 <li>
-                  <Link to="/map">Map</Link>
-                </li>
-                <li>
                   <Link to="/register">Register</Link>
                 </li>
                 <li>
@@ -30,6 +27,9 @@ class Navbar extends React.Component {
                 </li>
                 <li>
                   <Link to="/search">Search</Link>
+                </li>
+                <li>
+                  <Link to="/dashboard">DashBoard</Link>
                 </li>
               </ul>
           </nav>

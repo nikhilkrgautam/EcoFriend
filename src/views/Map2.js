@@ -6,32 +6,37 @@ import Marker from "./Marker";
 
 const Map2 = withScriptjs(withGoogleMap((props) =>{
 
-
+    
   return (
-    <div>
-      <div id="route-links" style={{marginTop: "80px"}}>
-      {
+    <React.Fragment>
+      <div id="route-links" >
+        <h1>Available routes: </h1>
 
-
-        /*props.directions.routes.map((route, ind) => {
-          return (
-            <div key={ind} onMouseEnter={() => props.getRoute(ind)}>
-              <h1>Route {ind}</h1>
-            </div>
-          )
-        })*/
-        props.directions &&
-        props.directions.routes.concat(props.busDirections.routes).concat(props.carDirections.routes).map((route, ind) => {
-            console.log(props.emission)
-            return (
-              <div key={ind} onMouseEnter={() => props.getRoute(ind)}>
-                <h1>{route.emissionType} Route {ind} {props.emission[ind] ? (<span>CO2: {props.emission[ind]}</span>) : null}</h1>
-              </div>
-            )
-        })
-
-      }
+        <table class="rwd-table">
+          <tr class="rwd-head">
+            <th>Source</th>
+            <th>Destination</th>
+            <th>Mode of transport</th>
+            <th>Carbon Footprint</th>
+          </tr>
+          {
+            props.directions &&
+            props.directions.routes.concat(props.busDirections.routes).concat(props.carDirections.routes).map((route, ind) => {
+                return (
+                  <tr key={ind} onMouseEnter={() => props.getRoute(ind)}>
+                    <td data-th="Source">Start</td>
+                    <td data-th="Destination">End</td>
+                    <td data-th="Mode of Transport">{route.emissionType}</td>
+                    <td data-th="Carbon Footprint">{props.emission[ind] ? (<span>{Math.round(props.emission[ind])} kg</span>) : null}</td>
+                  </tr>
+                )
+            })
+          }
+        </table>
+        
+      
       </div>
+      <div id="map-hold">
       <GoogleMap
         defaultZoom={13}
         center={props.center}
@@ -89,9 +94,13 @@ const Map2 = withScriptjs(withGoogleMap((props) =>{
     {
 
       props.directions &&
-      props.directions.routes.map((route, ind) =>
+      /*props.directions.routes.map((route, ind) =>
         <DirectionsRenderer directions={props.directions} routeIndex={ind} />
-      )
+      )*/
+
+      (props.routeType == "train" ? <DirectionsRenderer directions={props.directions} routeIndex={props.routeIndex} />
+      : (props.routeType == "car" ? <DirectionsRenderer directions={props.carDirections} routeIndex={props.routeIndex-5} /> 
+      : (<DirectionsRenderer directions={props.busDirections} routeIndex={props.routeIndex-4} />)))
 
       /*(
           [props.directions, props.carDirections, props.busDirections].map((dir, ind) => {
@@ -118,6 +127,7 @@ const Map2 = withScriptjs(withGoogleMap((props) =>{
     ) : null}
       </GoogleMap>
       </div>
+      </React.Fragment>
     );
   }
 ))

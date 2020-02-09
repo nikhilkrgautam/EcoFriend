@@ -4,6 +4,8 @@ import Map from "./Map2";
 import url from "../google_maps_key"
 import _ from "lodash"
 
+const keypass = "Vm9sZGVtb3J0OlN2bml0MTIz"
+
 // const google = window.google;
 
 export default class MapContainer extends React.Component {
@@ -16,7 +18,9 @@ export default class MapContainer extends React.Component {
       busDirections: null,
       distance: 0,
       routeIndex: 0,
+      routeType: "train",
       emission: [],
+      allRoutes: []
     }
   }
 
@@ -96,10 +100,22 @@ export default class MapContainer extends React.Component {
   }
 
   getRoute = (e) => {
+    if(e <= 3) {
+      this.setState({routeType: "train"})
+    } else if (e > 4) {
+      this.setState({routeType: "car"})
+    } else {
+      this.setState({routeType: "bus"})
+    }
     this.setState({routeIndex: e})
   }
 
   getDirections = () => {
+      this.setState({
+        directions: null,
+        carDirections: null,
+        busDirections: null
+      })
       const depLat = this.state.depMarkers[0].position.lat()
       const depLon = this.state.depMarkers[0].position.lng()
       const arrLat = this.state.arrMarkers[0].position.lat()
@@ -128,7 +144,9 @@ export default class MapContainer extends React.Component {
               result.routes[i].emissionType = 'train'
               // result.routes[i].co2Value = this.getCO2Value(result.routes[i].legs[0].distance.value, "train")
               this.getCO2Value(result.routes[i].legs[0].distance.value, "train", i)
-
+              this.setState(prev => ({
+                allRoutes: [result.routes[i], ...prev.allRoutes]
+              }));
             }
 
             // directions = result
@@ -165,10 +183,14 @@ export default class MapContainer extends React.Component {
                 result.routes[i].emissionType = 'car'
                 // result.routes[i].co2Value = this.getCO2Value(result.routes[i].legs[0].distance.value, "car")
                 this.getCO2Value(result.routes[i].legs[0].distance.value, "car", i)
+                this.setState(prev => ({
+                  allRoutes: [result.routes[i], ...prev.allRoutes]
+                }));
               }
 
               // carDirections = result
 
+              
               this.setState({
                 carDirections: result,
               });
@@ -200,11 +222,15 @@ export default class MapContainer extends React.Component {
                   result.routes[i].emissionType = 'bus'
                   // result.routes[i].co2Value = this.getCO2Value(result.routes[i].legs[0].distance.value, "bus")
                   this.getCO2Value(result.routes[i].legs[0].distance.value, "bus", i)
+                  this.setState(prev => ({
+                    allRoutes: [result.routes[i], ...prev.allRoutes]
+                  }));
                 }
                 // console.log(result);
 
                 // busDirections = result
 
+                
                 this.setState({
                   busDirections: result,
                 });
@@ -230,11 +256,11 @@ export default class MapContainer extends React.Component {
 
     switch(type) {
       case "car": {
-        var url = 'https://cors-anywhere.herokuapp.com/https://api.carbonkit.net/3.6/categories/Other_regional_road_transport_by_Greenhouse_Gas_Protocol/calculation?type=passenger+car&fuel=gasoline&emissionStandard=2005-present&uid=2E35U429HR99&values.distance=' + totalDistance;
+        var url = 'https://cors-anywhere.herokuapp.com/https://api.carbonkit.net/3.6/categories/Other_regional_road_transport_by_Greenhouse_Gas_Protocol/calculation?type=passenger+car&fuel=gasoline&emissionStandard=2005-present&uid=2E35U429HR99&values.distance=' + totalDistance/1000;
         var xhr = new XMLHttpRequest();
         xhr.open("GET", url, false);
         xhr.setRequestHeader("Accept", "application/json");
-        xhr.setRequestHeader("Authorization", "Basic c2FoaWxuYXJlNzg6I2Zkc2VIc3hla3JlOjM0NQ==");
+        xhr.setRequestHeader("Authorization", "Basic " + keypass);
         //xhr.setRequestHeader("Host", "api.carbonkit.net");
         xhr.setRequestHeader("Access-Control-Allow-Origin", "*");
 
@@ -246,7 +272,7 @@ export default class MapContainer extends React.Component {
             var resp = JSON.parse(xhr.responseText);
             //alert(resp)
 
-            co2value = resp.output.amounts[0].value 
+            co2value = resp.output.amounts[0].value / 4
             console.log(resp.output);
           }
         }
@@ -256,12 +282,12 @@ export default class MapContainer extends React.Component {
         break
       }
       case "bus": {
-        var url2 = 'https://cors-anywhere.herokuapp.com/https://api.carbonkit.net/3.6/categories/Other_regional_road_transport_by_Greenhouse_Gas_Protocol/calculation?type=bus&fuel=gasoline&uid=X2WWWW5T64LH&values.distance=' + totalDistance;
+        var url2 = 'https://cors-anywhere.herokuapp.com/https://api.carbonkit.net/3.6/categories/Other_regional_road_transport_by_Greenhouse_Gas_Protocol/calculation?type=bus&fuel=gasoline&uid=X2WWWW5T64LH&values.distance=' + totalDistance/1000;
         var xhr2 = new XMLHttpRequest();
 
         xhr2.open("GET", url2, false);
         xhr2.setRequestHeader("Accept", "application/json");
-        xhr2.setRequestHeader("Authorization", "Basic c2FoaWxuYXJlNzg6I2Zkc2VIc3hla3JlOjM0NQ==");
+        xhr2.setRequestHeader("Authorization", "Basic " + keypass);
         //xhr.setRequestHeader("Host", "api.carbonkit.net");
         xhr2.setRequestHeader("Access-Control-Allow-Origin", "*");
 
@@ -273,7 +299,7 @@ export default class MapContainer extends React.Component {
             var resp = JSON.parse(xhr2.responseText);
             //alert(resp)
 
-            co2value = resp.output.amounts[0].value / 35
+            co2value = resp.output.amounts[0].value / 30
             console.log(resp.output);
           }
         }
@@ -283,12 +309,12 @@ export default class MapContainer extends React.Component {
         break
       }
       case "train": {
-        var url3 = 'https://cors-anywhere.herokuapp.com/https://api.carbonkit.net/3.6/categories/Passenger_transport_by_Greenhouse_Gas_Protocol/calculation?type=train&subtype=national&region=other&uid=SLHD0UKMOFUL&values.distance=' + totalDistance;
+        var url3 = 'https://cors-anywhere.herokuapp.com/https://api.carbonkit.net/3.6/categories/Passenger_transport_by_Greenhouse_Gas_Protocol/calculation?type=train&subtype=national&region=other&uid=SLHD0UKMOFUL&values.distance=' + totalDistance/1000;
         var xhr3 = new XMLHttpRequest();
 
         xhr3.open("GET", url3, false);
         xhr3.setRequestHeader("Accept", "application/json");
-        xhr3.setRequestHeader("Authorization", "Basic c2FoaWxuYXJlNzg6I2Zkc2VIc3hla3JlOjM0NQ==");
+        xhr3.setRequestHeader("Authorization", "Basic " + keypass);
         //xhr.setRequestHeader("Host", "api.carbonkit.net");
         xhr3.setRequestHeader("Access-Control-Allow-Origin", "*");
 
@@ -300,7 +326,7 @@ export default class MapContainer extends React.Component {
             var resp = JSON.parse(xhr3.responseText);
             //alert(resp)
 
-            co2value = resp.output.amounts[0].value;
+            co2value = resp.output.amounts[0].value / 8
             
             console.log(resp.output);
           }
@@ -319,9 +345,10 @@ export default class MapContainer extends React.Component {
 
 	render() {
 		return (
-      <div>
+      <div className="map-container">
 			<Map
         routeIndex={this.state.routeIndex}
+        routeType={this.state.routeType}
         getRoute={this.getRoute}
         depMarkers={this.state.depMarkers}
 				arrMarkers={this.state.arrMarkers}
@@ -337,13 +364,13 @@ export default class MapContainer extends React.Component {
         carDirections={this.state.carDirections}
         busDirections={this.state.busDirections}
         emission={this.state.emission}
+        allRoutes={this.state.allRoutes}
 				googleMapURL={url}
 				loadingElement={<div style={{ height: `100%` }} />}
-				containerElement={<div style={{ height: `600px`, width: `1000px` }} />}
+				containerElement={<div id="map-big" style={{ height: `600px`, width: `100%` }} />}
 				mapElement={<div style={{ height: `100%` }} />}
 			/>
-      <button onClick={this.getDirections}>Get directions</button>
-      <h1>distance: {this.state.distance} km</h1>
+      <button id="map-btn" onClick={this.getDirections}>Get directions</button>
       </div>
 		);
 	}

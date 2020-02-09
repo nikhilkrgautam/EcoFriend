@@ -7,6 +7,7 @@ import Login from "./views/Login";
 import Register from "./views/Register";
 import MapContainer from "./views/MapContainer";
 import SearchMap from "./views/SearchMap";
+import Dashboard from "./views/Dashboard";
 
 export default [
   {
@@ -33,5 +34,9 @@ export default [
   {
     path: "/search",
     component: SearchMap
+  },
+  {
+    path: "/dashboard",
+    component: Dashboard
   }
 ]

@@ -3,7 +3,7 @@ import React from "react";
 import Map from "./Map";
 import url from "../google_maps_key"
 
-// const google = window.google;
+const google = window.google;
 
 export default class MapContainer extends React.Component {
 
@@ -117,6 +117,10 @@ export default class MapContainer extends React.Component {
 }
 
 MapContainer.defaultProps = {
+  props: [
+    new google.maps.LatLng({lat: 19.07283, lng: 72.88261}),
+    new google.maps.LatLng({lat: 19.08356, lng: 72.88265})
+  ],
   doctors: [
     {
       uid: 1,
