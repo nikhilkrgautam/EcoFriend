@@ -3,6 +3,8 @@ import React from "react";
 import { withScriptjs, withGoogleMap, GoogleMap, DirectionsRenderer } from "react-google-maps";
 import { SearchBox } from "react-google-maps/lib/components/places/SearchBox"
 import Marker from "./Marker";
+import { Polyline } from "react-google-maps"
+const locIcon = { url: require('../icons/location.png'), scaledSize: { width: 60, height: 60 } };
 
 const Map2 = withScriptjs(withGoogleMap((props) =>{
 
@@ -12,20 +14,30 @@ const Map2 = withScriptjs(withGoogleMap((props) =>{
       <div id="route-links" >
         <h1>Available routes: </h1>
 
-        <table class="rwd-table">
-          <tr class="rwd-head">
+        <table className="rwd-table">
+          <tr className="rwd-head">
             <th>Source</th>
             <th>Destination</th>
+            <th>Time</th>
             <th>Mode of transport</th>
             <th>Carbon Footprint</th>
           </tr>
           {
+            
             props.directions &&
             props.directions.routes.concat(props.busDirections.routes).concat(props.carDirections.routes).map((route, ind) => {
+                
+                
+                let time = route.legs[0].duration.text
+                let souRce = route.legs[0].start_address.split(" ")
+                let source = souRce.slice(souRce.length-4, souRce.length-2).join(" ")
+                let desTination = route.legs[0].end_address.split(" ")
+                let destination = desTination.slice(desTination.length-4, desTination.length-2).join(" ")
                 return (
-                  <tr key={ind} onMouseEnter={() => props.getRoute(ind)}>
-                    <td data-th="Source">Start</td>
-                    <td data-th="Destination">End</td>
+                  <tr className={Math.round(props.emission[ind]) === Math.round(Math.min(...props.emission)) ? "maxim" : "minim"} key={ind} onMouseEnter={() => props.getRoute(ind)}>
+                    <td data-th="Source">{source}</td>
+                    <td data-th="Destination">{destination}</td>
+                    <td data-th="Time">{time}</td>
                     <td data-th="Mode of Transport">{route.emissionType}</td>
                     <td data-th="Carbon Footprint">{props.emission[ind] ? (<span>{Math.round(props.emission[ind])} kg</span>) : null}</td>
                   </tr>
@@ -51,7 +63,7 @@ const Map2 = withScriptjs(withGoogleMap((props) =>{
     >
       <input
         type="text"
-        placeholder="Customized your placeholder"
+        placeholder="Source"
         style={{
           boxSizing: `border-box`,
           border: `1px solid transparent`,
@@ -75,7 +87,7 @@ const Map2 = withScriptjs(withGoogleMap((props) =>{
     >
       <input
         type="text"
-        placeholder="Customized your placeholder"
+        placeholder="Destination"
         style={{
           boxSizing: `border-box`,
           border: `1px solid transparent`,
@@ -119,6 +131,25 @@ const Map2 = withScriptjs(withGoogleMap((props) =>{
       )*/
 
     }
+
+    {props.polyPath ? 
+    <Polyline
+      path={props.polyPath}
+      geodesic={true}
+      options={{
+        strokeColor: "blue",
+        strokeOpacity: 0.75,
+        strokeWeight: 2,
+        icons: [
+            {
+                icon: locIcon,
+                offset: "0",
+                repeat: "20px"
+            }
+        ]
+    }}
+    >
+    </Polyline> : null}
     {!props.directions ? props.depMarkers.map((marker, index) =>
       <Marker key={index} position={marker.position} draggable={true} />
     ) : null}

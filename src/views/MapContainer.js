@@ -103,6 +103,7 @@ export default class MapContainer extends React.Component {
 			<Map
 				doctors={this.props.doctors}
         directions={this.state.directions}
+        path={this.props.path}
 				googleMapURL={url}
 				loadingElement={<div style={{ height: `100%` }} />}
 				containerElement={<div style={{ height: `600px`, width: `1000px` }} />}
@@ -117,9 +118,9 @@ export default class MapContainer extends React.Component {
 }
 
 MapContainer.defaultProps = {
-  props: [
-    new google.maps.LatLng({lat: 19.07283, lng: 72.88261}),
-    new google.maps.LatLng({lat: 19.08356, lng: 72.88265})
+  path: [
+    {lat: 19.07283, lng: 72.86761},
+    {lat: 58.10346, lng: 10.69265}
   ],
   doctors: [
     {

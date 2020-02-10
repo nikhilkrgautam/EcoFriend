@@ -18,8 +18,8 @@
 #route-links {
   position: absolute;
   top: 10%;
-  right: 10%;
-  width: 400px;
+  right: 7%;
+  width: 450px;
 }
 
 #map-btn {
@@ -48,7 +48,7 @@
   
 }
 .rwd-table tr:hover {
-  background: green;
+  background: orange;
 }
 .rwd-table .rwd-head:hover {
   background: #34495e;
@@ -115,6 +115,10 @@
 .rwd-table th,
 .rwd-table td:before {
   color: #FFF;
+}
+
+.rwd-table .maxim {
+  background: green !important;
 }
 
 
@@ -331,6 +335,35 @@ main {
   #breadcrumb{
     flex-direction: column;
   }
+}
+
+
+#navs{
+  background-color: darkblue;
+  color: white;
+}
+ 
+#navs ul{
+  list-style-type: none;
+  text-decoration: none;
+}
+
+#navs a{
+  text-decoration: none;
+}
+
+#pc{
+  width: 50%;
+  margin: 50px auto;
+}
+
+#dch{
+  width: 50%;
+  margin: 50px auto;
+}
+
+#bc {
+  margin: 10px 0;
 }
 
 

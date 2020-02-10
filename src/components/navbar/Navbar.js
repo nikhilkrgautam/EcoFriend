@@ -14,7 +14,7 @@ class Navbar extends React.Component {
   render() {
 
       return (
-          <nav>
+          <nav id="navs">
               <ul className="nav-bar">
                 <li>
                   <Link to="/">Home</Link>

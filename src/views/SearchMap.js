@@ -120,6 +120,12 @@ export default class MapContainer extends React.Component {
       const depLon = this.state.depMarkers[0].position.lng()
       const arrLat = this.state.arrMarkers[0].position.lat()
       const arrLon = this.state.arrMarkers[0].position.lng()
+
+      this.setState({
+        polyPath: 
+          [{ lat: depLat, lng: depLon }, { lat: arrLat, lng: depLat }]
+        
+      })
       // let trainDistance, carDistance, busDistance;
       let directions, carDirections, busDirections;
 

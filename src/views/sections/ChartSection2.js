@@ -53,11 +53,11 @@ class ChartSection2 extends Component {
         };
 
         const dataDoughnut = {
-            labels: ["Red", "Green", "Yellow", "Grey", "Dark Grey"],
+            labels: ["Train", "Car", "Bus", "Flight"],
             datasets: [{
-                data: [300, 50, 100, 40, 120],
-                backgroundColor: ["#F7464A", "#46BFBD", "#FDB45C", "#949FB1", "#4D5360"],
-                hoverBackgroundColor: ["#FF5A5E", "#5AD3D1", "#FFC870", "#A8B3C5", "#616774"]
+                data: [300, 50, 100, 40],
+                backgroundColor: ["#F7464A", "#46BFBD", "#FDB45C", "#949FB1"],
+                hoverBackgroundColor: ["#FF5A5E", "#5AD3D1", "#FFC870", "#A8B3C5"]
             }]
         };
 
@@ -72,10 +72,10 @@ class ChartSection2 extends Component {
                     </MDBCard>
                 </MDBCol>
                 <MDBCol md="12" lg="4" className="mb-4">
-                    <MDBCard className="mb-4">
-                    <MDBCardHeader>Doughnut chart</MDBCardHeader>
+                    <MDBCard id="dch" className="mb-4">
+                    <MDBCardHeader style={{fontSize: "30px"}}>Transport analysis</MDBCardHeader>
                     <MDBCardBody >
-                        <Doughnut data={dataDoughnut}  height={300} options={{responsive: true }} />
+                        <Doughnut data={dataDoughnut}  width={100} options={{responsive: true }} />
                     </MDBCardBody>
                     </MDBCard>
                 </MDBCol>
