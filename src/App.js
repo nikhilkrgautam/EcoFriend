@@ -5,6 +5,7 @@ import Firebase, {FirebaseProvider} from './firebase'
 import Navbar from "./components/navbar/Navbar"
 import routes from "./routes"
 
+
 function App() {
   return (
     <Router basename={process.env.REACT_APP_BASENAME || ""}>
